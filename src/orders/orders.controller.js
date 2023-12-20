@@ -6,15 +6,17 @@ const orders = require(path.resolve("src/data/orders-data"));
 // Use this function to assigh ID's when necessary
 const nextId = require("../utils/nextId");
 
-// TODO: Implement the /orders handlers needed to make the tests pass
+// Read the existing orders  and display them to the user
 function list(req, res, next) {
   res.json({ data: orders });
 }
 
+// Read the existing order data and display it to the user
 function read(req, res) {
   res.json({ data: res.locals.order });
 }
 
+// Validate order id
 function orderExist(req, res, next) {
   const { orderId } = req.params;
   const foundOrder = orders.find((order) => order.id === orderId);
@@ -28,6 +30,7 @@ function orderExist(req, res, next) {
   });
 }
 
+// validate that properties exist in request body
 function bodyDataHas(propertyName) {
   return function (req, res, next) {
     const { data = {} } = req.body;
@@ -41,6 +44,7 @@ function bodyDataHas(propertyName) {
   };
 }
 
+// check that property name of request body is not empty
 function bodyDataIsEmpty(propertyName) {
   return function (req, res, next) {
     const { data = {} } = req.body;
@@ -53,7 +57,8 @@ function bodyDataIsEmpty(propertyName) {
     });
   };
 }
-
+// validate that dishes is type od array and not empty
+// and price is valid number
 function validateDishes(req, res, next) {
   const { data } = req.body;
   const dishes = data.dishes;
@@ -74,6 +79,7 @@ function validateDishes(req, res, next) {
   return next();
 }
 
+// Validate dishes
 function validateDishQuantity(req, res, next) {
   const { data } = req.body;
   const dishes = data.dishes;
@@ -88,6 +94,7 @@ function validateDishQuantity(req, res, next) {
   return next();
 }
 
+// method helper for validating quantity requirements
 function checkQuantity(dish) {
   const { quantity = {} } = dish;
 
@@ -98,6 +105,7 @@ function checkQuantity(dish) {
   return true;
 }
 
+//Create Order and store it in array
 function create(req, res, next) {
   const { data: { deliverTo, mobileNumber, status, dishes } = {} } = req.body;
   const dishesToString = JSON.stringify(dishes);
@@ -114,6 +122,7 @@ function create(req, res, next) {
   res.status(201).json({ data: newOrder });
 }
 
+// Validate that request body Id is the same as in parameter id
 function idMatches(req, res, next) {
   const { data: { id } = {} } = req.body;
   const { orderId } = req.params;
@@ -124,6 +133,8 @@ function idMatches(req, res, next) {
     message: `Order id does not match route id. Order: ${id}, Route: ${orderId}.`,
   });
 }
+
+// Update existing order
 function update(req, res) {
   foundOrder = res.locals.order;
   const { data: { deliverTo, mobileNumber, status, dishes } = {} } = req.body;
@@ -136,6 +147,7 @@ function update(req, res) {
   res.json({ data: foundOrder });
 }
 
+//Validate order status
 function validateOrderStatus(req, res, next) {
   const { data: { status } = {} } = req.body;
   if (!status)
@@ -150,7 +162,7 @@ function validateOrderStatus(req, res, next) {
     });
   return next();
 }
-
+// Validate that order status should be provided and check order categories
 function validateOrderStatusStage(req, res, next) {
   const { data: { status } = {} } = req.body;
   const orderStatuses = [
@@ -169,6 +181,7 @@ function validateOrderStatusStage(req, res, next) {
   return next();
 }
 
+// Validate that order is eligible for delition
 function validateOrderStatusForDeletion(req, res, next) {
   const orderToDelete = res.locals.order;
   if (orderToDelete.status !== "pending")
@@ -178,7 +191,7 @@ function validateOrderStatusForDeletion(req, res, next) {
     });
   return next();
 }
-
+// Delete order
 function destroy(req, res, next) {
   const { orderId } = req.params;
   const index = orders.findIndex((order) => order.id === orderId);

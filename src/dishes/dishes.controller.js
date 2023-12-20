@@ -6,15 +6,17 @@ const dishes = require(path.resolve("src/data/dishes-data"));
 // Use this function to assign ID's when necessary
 const nextId = require("../utils/nextId");
 
-// TODO: Implement the /dishes handlers needed to make the tests pass
+// Read the existing dishes  and display it to the user
 function list(req, res) {
   res.json({ data: dishes });
 }
 
+// Read the existing orders  and display them to the user
 function read(req, res) {
   res.json({ data: res.locals.dish });
 }
 
+//Validate that dish record exist
 function dishExist(req, res, next) {
   const { dishId } = req.params;
   const foundDish = dishes.find((dish) => dish.id === dishId);
@@ -28,6 +30,7 @@ function dishExist(req, res, next) {
   });
 }
 
+//Create new dish record
 function create(req, res, next) {
   const { data: { name, description, price, image_url } = {} } = req.body;
   const newDish = {
@@ -41,6 +44,7 @@ function create(req, res, next) {
   res.status(201).json({ data: newDish });
 }
 
+//Update new dish record
 function update(req, res, next) {
   const { data: { name, description, price, image_url } = {} } = req.body;
   const dish = res.locals.dish;
@@ -51,6 +55,7 @@ function update(req, res, next) {
   res.json({ data: dish });
 }
 
+// Validate that properties exist in request body
 function bodyDataIsEmpty(propertyName) {
   return function (req, res, next) {
     const { data = {} } = req.body;
@@ -64,6 +69,7 @@ function bodyDataIsEmpty(propertyName) {
   };
 }
 
+// Validate that request body Id is the same as in parameter id
 function idMatches(req, res, next) {
   const { data: { id } = {} } = req.body;
   const { dishId } = req.params;
@@ -77,6 +83,7 @@ function idMatches(req, res, next) {
   });
 }
 
+// Validate that properties exist in the request body
 function bodyDataHas(propertyName) {
   return function (req, res, next) {
     const { data = {} } = req.body;
@@ -90,6 +97,7 @@ function bodyDataHas(propertyName) {
   };
 }
 
+// Validate price and throw error if price is not valid
 function validatePrice(req, res, next) {
   const {
     data: { price },

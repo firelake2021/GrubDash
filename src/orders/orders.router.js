@@ -2,7 +2,7 @@ const router = require("express").Router();
 const controller = require("./orders.controller");
 const methodNotAllowed = require("../errors/methodNotAllowed");
 
-// TODO: Implement the /orders routes needed to make the tests pass
+// route: orders/:orderId: for  read, put, and delete operations
 router
   .route("/:orderId")
   .get(controller.read)
@@ -10,6 +10,7 @@ router
   .delete(controller.delete)
   .all(methodNotAllowed);
 
+//  route: orders/ ,  for lsit and create order operations
 router
   .route("/")
   .get(controller.list)
