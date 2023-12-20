@@ -30,7 +30,7 @@ function orderExist(req, res, next) {
   });
 }
 
-// validate that properties exist in request body
+// Validate that properties exist in request body
 function bodyDataHas(propertyName) {
   return function (req, res, next) {
     const { data = {} } = req.body;
@@ -44,7 +44,7 @@ function bodyDataHas(propertyName) {
   };
 }
 
-// check that property name of request body is not empty
+// Check that property name of request body is not empty
 function bodyDataIsEmpty(propertyName) {
   return function (req, res, next) {
     const { data = {} } = req.body;
@@ -57,7 +57,7 @@ function bodyDataIsEmpty(propertyName) {
     });
   };
 }
-// validate that dishes is type od array and not empty
+// Validate that dishes is type od array and not empty
 // and price is valid number
 function validateDishes(req, res, next) {
   const { data } = req.body;
@@ -94,7 +94,7 @@ function validateDishQuantity(req, res, next) {
   return next();
 }
 
-// method helper for validating quantity requirements
+//Method-helper for validating quantity requirements
 function checkQuantity(dish) {
   const { quantity = {} } = dish;
 
